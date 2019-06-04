@@ -90,6 +90,22 @@ func (this *webpageT) endParagraph() {
 	this.para = ""
 }
 
+func escape(text estring) estring {
+	s := make([]rune, 0, len(text))
+	for _, c := range text {
+		if c == '<' {
+			s = append(s, []rune("&lt;")...)
+		} else if c == '>' {
+			s = append(s, []rune("&gt;")...)
+		} else if c == '&' {
+			s = append(s, []rune("&amp;")...)
+		} else {
+			s = append(s, c)
+		}
+	}
+	return estring(s)
+}
+
 /*! As Output::addText(). \a text is used escaped (&amp; etc). */
 
 func (this *webpageT) addText(text estring) {
@@ -110,19 +126,7 @@ func (this *webpageT) addText(text estring) {
 		this.pstart = false
 	}
 
-	var s estring
-	for i < text.length() {
-		if text[i] == '<' {
-			s.append("&lt;")
-		} else if text[i] == '>' {
-			s.append("&gt;")
-		} else if text[i] == '&' {
-			s.append("&amp;")
-		} else {
-			s.append(estring(text[i]))
-		}
-		i++
-	}
+	s := escape(text[i:])
 	this.output(s)
 }
 
