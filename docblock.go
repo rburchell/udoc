@@ -498,6 +498,54 @@ func (this *DocBlock) section(i *int, sect int) {
 func (this *DocBlock) code(i *int) {
 	p := newParser(this.t[*i:])
 	code := p.textUntil("\\endcode")
+
+	startSplit := 0
+	for _, c := range code {
+		if c == ' ' {
+			startSplit++
+		} else if c == '\n' {
+			// ignore
+		} else {
+			break
+		}
+	}
+
+	if startSplit > 0 {
+		processedCode := make([]rune, 0, len(code))
+		skipWhitespace := startSplit
+		startOfLine := true
+		shouldReplace := true
+
+		for _, c := range code {
+			switch c {
+			case ' ':
+				if startOfLine && skipWhitespace > 0 {
+					skipWhitespace--
+				} else {
+					processedCode = append(processedCode, c)
+				}
+			case '\n':
+				skipWhitespace = startSplit
+				startOfLine = true
+				processedCode = append(processedCode, c)
+			default:
+				startOfLine = false
+
+				// don't try trim the prefix of multiline blocks that have
+				// different amounts of indentation, that's just asking for
+				// trouble...
+				if skipWhitespace > 0 {
+					shouldReplace = false
+				}
+				processedCode = append(processedCode, c)
+			}
+		}
+
+		if shouldReplace {
+			code = estring(processedCode)
+		}
+	}
+
 	output.addCodeBlock(code)
 	*i += p.i
 }
