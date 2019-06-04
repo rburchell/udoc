@@ -252,7 +252,7 @@ func (this *webpageT) addClass(text estring, c *Class) {
 
 func (this *webpageT) addCodeBlock(text estring) {
 	this.output("<pre>")
-	this.output(text)
+	this.output(escape(text))
 	this.output("</pre>")
 }
 
