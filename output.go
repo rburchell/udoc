@@ -96,6 +96,17 @@ func (this *outputT) addClass(text estring, c *Class) {
 	webpage.addClass(text, c)
 }
 
+/*! Adds a link to \a c titled \a text on all output devices. Each
+  device may express the link differently.
+*/
+func (this *outputT) addCodeBlock(text estring) {
+	if this.needSpace {
+		this.needSpace = false
+		this.addText(" ")
+	}
+	webpage.addCodeBlock(text)
+}
+
 /*! Adds a single space to all output devices, prettily optimizing so
   there aren't lots of spaces where none are needed.
 */

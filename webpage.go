@@ -246,6 +246,12 @@ func (this *webpageT) addClass(text estring, c *Class) {
 	}
 }
 
+func (this *webpageT) addCodeBlock(text estring) {
+	this.output("<pre>")
+	this.output(text)
+	this.output("</pre>")
+}
+
 /*! Write \a s to the output file. */
 
 func (this *webpageT) output(s estring) {

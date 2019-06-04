@@ -322,6 +322,8 @@ func (this *DocBlock) word(i *int, l, n int) {
 		this.introduces = true
 	} else if w == "\\overload" {
 		this.overload(l, n)
+	} else if w == "\\code" {
+		this.code(i, l)
 	} else {
 		docError(this.file, l, "udoc directive unknown: "+w)
 	}
@@ -422,6 +424,17 @@ func (this *DocBlock) plainWord(w estring, l int) {
 
 	// nothing doing. just add it as text.
 	output.addText(w)
+}
+
+/*! Handles the "\code" directive. \a l is the line number where
+  directive was seen.
+*/
+
+func (this *DocBlock) code(i *int, l int) {
+	p := newParser(this.t[*i:])
+	code := p.textUntil("\\endcode")
+	output.addCodeBlock(code)
+	*i += p.i
 }
 
 /*! Handles the "\overload" directive. \a l is the line number where
