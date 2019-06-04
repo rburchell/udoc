@@ -102,6 +102,19 @@ func (this *HeaderFile) parse() {
 				return
 			}
 			superclass = parent
+
+			{
+				// rudimentary handling of multiple inheritance (by ignoring it)
+				p.whitespace()
+
+				if p.lookingAt(",") {
+					docError(this, p.line(), "Skipping multiple inheritance on class "+className)
+					for !p.lookingAt("{") {
+						p.step()
+						p.whitespace()
+					}
+				}
+			}
 		}
 		p.whitespace()
 		if p.lookingAt("{") {
