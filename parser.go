@@ -288,7 +288,7 @@ func (this *Parser) argumentList() estring {
 	if this.t.at(j) != '(' {
 		return r
 	}
-	r = "( "
+	r = "("
 	this.i = this.whitespaceAt(j + 1)
 	if this.t.at(this.i) == ')' {
 		this.i++
@@ -330,7 +330,7 @@ func (this *Parser) argumentList() estring {
 	if this.t.at(this.i) != ')' {
 		return ""
 	}
-	r += " )"
+	r += ")"
 	this.i++
 	return r
 }
