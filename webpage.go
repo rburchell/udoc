@@ -159,7 +159,7 @@ func (this *webpageT) addFunction(text estring, f *Function) {
 	// if we don't find the complete function name, try just the member part
 	if ls < 0 {
 		i := name.length()
-		for i > 0 && name[i] != ':' {
+		for i > 0 && name.at(i) != ':' {
 			i--
 		}
 		if i > 0 {

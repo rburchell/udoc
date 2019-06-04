@@ -96,6 +96,9 @@ type DocBlock struct {
 */
 
 func (this *DocBlock) generate() {
+	if this.t.contains("\\internal") {
+		return
+	}
 	if this.f != nil {
 		this.generateFunctionPreamble()
 	} else if this.c != nil {

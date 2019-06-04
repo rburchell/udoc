@@ -70,10 +70,10 @@ func (this estring) contains(o estring) bool {
 	return this.find(o) != -1
 }
 func (this estring) find(o estring) int {
-	return strings.IndexAny(string(this), string(o))
+	return strings.Index(string(this), string(o))
 }
 func (this estring) findAt(o estring, pos int) int {
-	ret := strings.IndexAny(string(this[pos:]), string(o))
+	ret := strings.Index(string(this[pos:]), string(o))
 	if ret >= 0 {
 		return pos + ret
 	}
