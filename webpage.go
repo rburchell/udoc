@@ -262,6 +262,20 @@ func (this *webpageT) addNote(text estring) {
 	this.addText(text)
 }
 
+func (this *webpageT) addSection(prio int, text estring) {
+	if prio == 1 {
+		this.output("<h1>")
+		this.addText(text)
+		this.output("</h1>")
+	} else if prio == 2 {
+		this.output("<h2>")
+		this.addText(text)
+		this.output("</h2>")
+	} else {
+		panic(fmt.Sprintf("No support for prio level %d", prio))
+	}
+}
+
 /*! Write \a s to the output file. */
 
 func (this *webpageT) output(s estring) {

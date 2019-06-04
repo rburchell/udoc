@@ -328,6 +328,12 @@ func (this *DocBlock) word(i *int, l, n int) {
 		this.warning(i)
 	} else if w == "\\note" {
 		this.note(i)
+	} else if w == "\\section1" {
+		this.section(i, 1)
+	} else if w == "\\section2" {
+		this.section(i, 2)
+	} else if w == "\\section3" {
+		this.section(i, 3)
 	} else {
 		docError(this.file, l, "udoc directive unknown: "+w)
 	}
@@ -430,7 +436,7 @@ func (this *DocBlock) plainWord(w estring, l int) {
 	output.addText(w)
 }
 
-func (this *DocBlock) readUntilSlash(i *int) (estring, int) {
+func (this *DocBlock) readUntilEndOfBlock(i *int) (estring, int) {
 	p := newParser(this.t[*i:])
 
 	var t estring
@@ -452,7 +458,7 @@ func (this *DocBlock) readUntilSlash(i *int) (estring, int) {
 /*! Handles the "\note" directive. \a i is the current cursor position.
  */
 func (this *DocBlock) note(i *int) {
-	text, advance := this.readUntilSlash(i)
+	text, advance := this.readUntilEndOfBlock(i)
 	output.addNote(text)
 	*i += advance
 }
@@ -460,8 +466,17 @@ func (this *DocBlock) note(i *int) {
 /*! Handles the "\warning" directive. \a i is the current cursor position.
  */
 func (this *DocBlock) warning(i *int) {
-	text, advance := this.readUntilSlash(i)
+	text, advance := this.readUntilEndOfBlock(i)
 	output.addWarning(text)
+	*i += advance
+}
+
+/*! Handles the "\sectionN" directive. \a i is the current cursor position.
+* \a sect is the section number.
+ */
+func (this *DocBlock) section(i *int, sect int) {
+	text, advance := this.readUntilEndOfBlock(i)
+	output.addSection(sect, text)
 	*i += advance
 }
 

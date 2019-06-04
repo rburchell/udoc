@@ -129,6 +129,17 @@ func (this *outputT) addNote(text estring) {
 	webpage.addNote(text)
 }
 
+/*! Adds a section header of emphasis level \a prio with a given \a text
+* to all output devices. Each device may express the link differently.
+ */
+func (this *outputT) addSection(prio int, text estring) {
+	if this.needSpace {
+		this.needSpace = false
+		this.addText(" ")
+	}
+	webpage.addSection(prio, text)
+}
+
 /*! Adds a single space to all output devices, prettily optimizing so
   there aren't lots of spaces where none are needed.
 */
