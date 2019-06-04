@@ -252,6 +252,16 @@ func (this *webpageT) addCodeBlock(text estring) {
 	this.output("</pre>")
 }
 
+func (this *webpageT) addWarning(text estring) {
+	this.output("<p><b>Warning:</b></p>")
+	this.addText(text)
+}
+
+func (this *webpageT) addNote(text estring) {
+	this.output("<p><b>Note:</b></p>")
+	this.addText(text)
+}
+
 /*! Write \a s to the output file. */
 
 func (this *webpageT) output(s estring) {

@@ -323,7 +323,11 @@ func (this *DocBlock) word(i *int, l, n int) {
 	} else if w == "\\overload" {
 		this.overload(l, n)
 	} else if w == "\\code" {
-		this.code(i, l)
+		this.code(i)
+	} else if w == "\\warning" {
+		this.warning(i)
+	} else if w == "\\note" {
+		this.note(i)
 	} else {
 		docError(this.file, l, "udoc directive unknown: "+w)
 	}
@@ -426,11 +430,44 @@ func (this *DocBlock) plainWord(w estring, l int) {
 	output.addText(w)
 }
 
-/*! Handles the "\code" directive. \a l is the line number where
-  directive was seen.
-*/
+func (this *DocBlock) readUntilSlash(i *int) (estring, int) {
+	p := newParser(this.t[*i:])
 
-func (this *DocBlock) code(i *int, l int) {
+	var t estring
+	for !p.atEnd() && !p.lookingAt("\n\n") {
+		c := p.t.at(p.i)
+		p.step()
+		if c == '\t' {
+			c = ' '
+		}
+		if c == '\n' {
+			continue
+		}
+		t += estring(c)
+	}
+
+	return t.simplified(), p.i
+}
+
+/*! Handles the "\note" directive. \a i is the current cursor position.
+ */
+func (this *DocBlock) note(i *int) {
+	text, advance := this.readUntilSlash(i)
+	output.addNote(text)
+	*i += advance
+}
+
+/*! Handles the "\warning" directive. \a i is the current cursor position.
+ */
+func (this *DocBlock) warning(i *int) {
+	text, advance := this.readUntilSlash(i)
+	output.addWarning(text)
+	*i += advance
+}
+
+/*! Handles the "\code" directive. \a i is the current cursor position.
+ */
+func (this *DocBlock) code(i *int) {
 	p := newParser(this.t[*i:])
 	code := p.textUntil("\\endcode")
 	output.addCodeBlock(code)

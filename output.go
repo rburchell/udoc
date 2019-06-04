@@ -85,7 +85,7 @@ func (this *outputT) addFunction(text estring, f *Function) {
 	webpage.addFunction(text, f)
 }
 
-/*! Adds a link to \a c titled \a text on all output devices. Each
+/*! Adds a link to \a c titled \a text to all output devices. Each
   device may express the link differently.
 */
 func (this *outputT) addClass(text estring, c *Class) {
@@ -96,8 +96,8 @@ func (this *outputT) addClass(text estring, c *Class) {
 	webpage.addClass(text, c)
 }
 
-/*! Adds a link to \a c titled \a text on all output devices. Each
-  device may express the link differently.
+/*! Adds a code snippet \a text to all output devices. Each
+  device may express the snippet differently.
 */
 func (this *outputT) addCodeBlock(text estring) {
 	if this.needSpace {
@@ -105,6 +105,28 @@ func (this *outputT) addCodeBlock(text estring) {
 		this.addText(" ")
 	}
 	webpage.addCodeBlock(text)
+}
+
+/*! Adds an emphasized warning note \a text to all output devices. Each
+  device may express the link differently.
+*/
+func (this *outputT) addWarning(text estring) {
+	if this.needSpace {
+		this.needSpace = false
+		this.addText(" ")
+	}
+	webpage.addWarning(text)
+}
+
+/*! Adds an emphasized note \a text to all output devices. Each
+  device may express the link differently.
+*/
+func (this *outputT) addNote(text estring) {
+	if this.needSpace {
+		this.needSpace = false
+		this.addText(" ")
+	}
+	webpage.addNote(text)
 }
 
 /*! Adds a single space to all output devices, prettily optimizing so
