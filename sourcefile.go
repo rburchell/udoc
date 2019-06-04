@@ -45,6 +45,22 @@ func NewSourceFile(fname string) {
 	sf.Parse()
 }
 
+func (this *SourceFile) findHeaderFromCandidates(candidates []estring, l int) estring {
+	for _, candidate := range candidates {
+		if this.contents.contains("#include \""+candidate+"\"") ||
+			this.contents.contains("#include <"+candidate+">") {
+			log.Printf("Guessed header: %s", candidate)
+			return candidate
+		}
+	}
+
+	// Don't warn if there is more than one candidate (we were trying to guess).
+	if len(candidates) == 1 {
+		docError(this, l, "File does not include "+candidates[0])
+	}
+	return ""
+}
+
 /*! This happy-happy little function parse (or scans, to be truthful)
   a C++ source file looking for documentation. It's the All of this
   class.
@@ -94,31 +110,34 @@ func (this *SourceFile) Parse() {
 				hn += "."
 				hn += p.word()
 			}
+			var headerCandidates []estring
 			if hn.length() < 2 || hn.mid(hn.length()-2, hn.length()) != ".h" {
-				docError(this, l, "Missing header file name")
+				//docError(this, l, "Missing header file name")
+				headerCandidates = append(headerCandidates, className.lower()+".h")
+				headerCandidates = append(headerCandidates, className+".h")
+				headerCandidates = append(headerCandidates, className.lower()+"_p.h")
+				headerCandidates = append(headerCandidates, className+"_p.h")
 			} else {
-				if !this.contents.contains("#include \""+hn+"\"") &&
-					!this.contents.contains("#include <"+hn+">") {
-					docError(this, l, "File does not include "+hn)
-				}
-				h := findHeaderFile(hn)
-				if h == nil {
-					if this.Name().contains("/") {
-						dir := this.Name()
-						i := dir.length() - 1
-						for i > 0 && dir[i] != '/' {
-							i--
-						}
-						hn = dir.mid(0, i+1) + hn
+				headerCandidates = append(headerCandidates, hn)
+			}
+			hn = this.findHeaderFromCandidates(headerCandidates, l)
+			h := findHeaderFile(hn)
+			if h == nil {
+				if this.Name().contains("/") {
+					dir := this.Name()
+					i := dir.length() - 1
+					for i > 0 && dir[i] != '/' {
+						i--
 					}
-					h = newHeaderFile(hn)
-					if !h.valid() {
-						docError(this, l, "Cannot find header file "+hn+" (for class "+className+")")
-					}
+					hn = dir.mid(0, i+1) + hn
 				}
-				if len(c.members()) == 0 {
-					docError(this, l, "Cannot find any "+className+" members in "+hn)
+				h = newHeaderFile(hn)
+				if !h.valid() {
+					docError(this, l, "Cannot find header file "+hn+" (for class "+className+")")
 				}
+			}
+			if len(c.members()) == 0 {
+				docError(this, l, "Cannot find any "+className+" members in "+hn)
 			}
 			d = p.textUntil("*/")
 		} else if p.lookingAt("\\nodoc") {

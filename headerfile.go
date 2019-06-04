@@ -46,6 +46,7 @@ func newHeaderFile(fn estring) *HeaderFile {
 
 	c, err := ioutil.ReadFile(string(fn))
 	if err != nil {
+		log.Printf("Error reading header file: %s: %s", fn, err)
 		return hf
 	}
 
