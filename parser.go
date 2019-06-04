@@ -246,6 +246,30 @@ func (this *Parser) parseType() estring {
 		r = r.mid(6, len(r))
 	}
 	r.replace(" class ", " ")
+
+	tlen := len(r)
+
+	// ### it might be nice to treat types as a real type rather than a string,
+	// and expose reference/pointer as a field. then, the formatters can decide
+	// to do whatever they want with this.
+	if tlen >= 2 {
+		lastc := r[tlen-1]
+		switch lastc {
+		case '*':
+			fallthrough
+		case '&':
+			s := make([]rune, 0, len(r))
+			for idx, c := range r {
+				if idx == tlen-2 {
+					if c == ' ' {
+						continue
+					}
+				}
+				s = append(s, c)
+			}
+			r = estring(s)
+		}
+	}
 	return r
 }
 
