@@ -100,11 +100,9 @@ func (this *outputT) addClass(text estring, c *Class) {
   device may express the snippet differently.
 */
 func (this *outputT) addCodeBlock(text estring) {
-	if this.needSpace {
-		this.needSpace = false
-		this.addText(" ")
-	}
+	this.endParagraph()
 	webpage.addCodeBlock(text)
+	this.endParagraph()
 }
 
 /*! Adds an emphasized warning note \a text to all output devices. Each
