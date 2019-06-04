@@ -257,6 +257,11 @@ func (this *webpageT) addWarning(text estring) {
 	this.addText(text)
 }
 
+func (this *webpageT) seeAlso(text estring) {
+	this.output("<p><b>See also:</b></p>")
+	this.output(text)
+}
+
 func (this *webpageT) addNote(text estring) {
 	this.output("<p><b>Note:</b></p>")
 	this.addText(text)

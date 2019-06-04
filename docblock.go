@@ -329,6 +329,8 @@ func (this *DocBlock) word(i *int, l, n int) {
 		this.code(i)
 	} else if w == "\\warning" {
 		this.warning(i)
+	} else if w == "\\sa" {
+		this.seeAlso(i)
 	} else if w == "\\note" {
 		this.note(i)
 	} else if w == "\\section1" {
@@ -471,6 +473,14 @@ func (this *DocBlock) note(i *int) {
 func (this *DocBlock) warning(i *int) {
 	text, advance := this.readUntilEndOfBlock(i)
 	output.addWarning(text)
+	*i += advance
+}
+
+/*! Handles the "\sa" directive. \a i is the current cursor position.
+ */
+func (this *DocBlock) seeAlso(i *int) {
+	text, advance := this.readUntilEndOfBlock(i)
+	output.seeAlso(text)
 	*i += advance
 }
 

@@ -118,6 +118,17 @@ func (this *outputT) addWarning(text estring) {
 	webpage.addWarning(text)
 }
 
+/*! Adds a see also block \a text to all output devices. Each
+  device may express the link differently.
+*/
+func (this *outputT) seeAlso(text estring) {
+	if this.needSpace {
+		this.needSpace = false
+		this.addText(" ")
+	}
+	webpage.seeAlso(text)
+}
+
 /*! Adds an emphasized note \a text to all output devices. Each
   device may express the link differently.
 */
