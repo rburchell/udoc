@@ -538,19 +538,16 @@ func (this *DocBlock) generateClassPreamble() {
 		output.addText("Inherited by ")
 		p = true
 
-		for _, sub := range subclasses {
-			// ### FIXME
-			//if ( !it ) {
-			//    output.addClass( sub.name() + ".", sub );
-			//}
-			//else if ( it == subclasses.last() ) {
-			//    output.addClass( sub.name(), sub );
-			//    output.addText( " and " );
-			//}
-			//else {
-			output.addClass(sub.name()+",", sub)
-			output.addText(" ")
-			//}
+		for idx, sub := range subclasses {
+			if idx == len(subclasses)-1 {
+				output.addClass(sub.name()+".", sub)
+			} else if idx == len(subclasses)-2 {
+				output.addClass(sub.name(), sub)
+				output.addText(" and ")
+			} else {
+				output.addClass(sub.name()+",", sub)
+				output.addText(" ")
+			}
 		}
 	}
 	if p {
